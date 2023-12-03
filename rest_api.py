@@ -1,9 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from flask import Flask, _app_ctx_stack, jsonify
+from flask import Flask#, _app_ctx_stack, jsonify
 from sqlalchemy.orm import scoped_session
 from sqlalchemy import Column, Integer, String, Float
+import greenlet
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///accounting2.sq3"
 
@@ -31,7 +32,8 @@ class Accounting(Base):
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Our very hard to guess secretf for the Python study group'
-app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
+#app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
+app.session = scoped_session(SessionLocal, scopefunc=greenlet.getcurrent)
 
 @app.route('/items')
 def get_accounting():
